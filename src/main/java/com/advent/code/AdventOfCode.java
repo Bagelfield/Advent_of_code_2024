@@ -171,4 +171,24 @@ public class AdventOfCode {
 		}
 		return String.valueOf(count);
 	}
+    private static String day4(String fileName) throws IOException {
+		int count = 0;
+
+		try (FileReader file = new FileReader(fileName);
+			 BufferedReader buffer = new BufferedReader(file)) {
+
+			final List<List<Integer>> reportsLevelsList = buffer.lines()
+					.map(report -> Arrays.stream(report.split(" ")))
+					.map(stringStream -> stringStream.map(Integer::parseInt)
+							.collect(Collectors.toList()))
+					.collect(Collectors.toList());
+
+			display(reportsLevelsList);
+			for (List<Integer> levels : reportsLevelsList) {
+				boolean safe = verifyIfLevelsSafe(levels);
+				if (safe) count++;
+			}
+		}
+		return String.valueOf(count);
+	}
 }
