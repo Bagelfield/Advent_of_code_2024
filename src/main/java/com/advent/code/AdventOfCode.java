@@ -1,29 +1,19 @@
 package com.advent.code;
 
+import com.advent.code.day4.Day4;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static java.util.logging.Logger.getGlobal;
-
 public class AdventOfCode {
-	static Logger logger = getGlobal();
-	private static long DAY = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+	private static final System.Logger logger = System.getLogger("logger");
 	private static final String PREFIX_URL =
-			"D:\\Developpement\\ADVENT_OF_CODE\\advent_of_code\\src\\main\\java\\com\\advent\\code\\files\\";
+			"D:\\tools\\ADVENT_OF_CODE\\Advent_of_code_2024\\src\\main\\java\\com\\advent\\code\\files\\";
 	private static final String EXTENSION = ".txt";
-	private static final Map<Long, String> fileNameDayMap = initProject(false);
 	private static Map<Long, String> initProject(boolean isTest) {
-		logger.setLevel(Level.FINER);
 		Map<Long, String> map = new HashMap<>();
 
 		for (long i = 1; i < 25; i++) {
@@ -56,7 +46,7 @@ public class AdventOfCode {
 			}
 		}
 		String str = sb.toString();
-		logger.info(str);
+		logger.log(System.Logger.Level.INFO, str);
 	}
 	private static int distance(int i, int j) {
 		return i >= j ? i-j : j-i;
@@ -93,18 +83,9 @@ public class AdventOfCode {
 	}
 
 	public static void main(String[] args) throws IOException {
-		switch((int) DAY-1) {
-			case 1:
-				var result1 = day1(fileNameDayMap.get(DAY-1));
-				logger.info(result1);
-				break;
-			case 2:
-				var result2 = day2(fileNameDayMap.get(DAY-1));
-				logger.info(result2);
-				break;
-			default:
-				break;
-		}
+  Map<Long, String> fileNameDayMap;
+		fileNameDayMap = initProject(true);
+		logger.log(System.Logger.Level.INFO, day4(fileNameDayMap.get(4L)));
 	}
 
 	private static String day1(String fileName) throws IOException {
@@ -130,18 +111,6 @@ public class AdventOfCode {
 					})
 					.collect(Collectors.toList());
 
-//			var final1 = finalListe1
-//					.stream()
-//					.sorted()
-//					.collect(Collectors.toList());
-//			var final2 = finalListe2
-//					.stream()
-//					.sorted()
-//					.collect(Collectors.toList());
-//			for (int i = 0; i < final1.size(); i++) {
-//				sum += distance(final1.get(i), final2.get(i));
-//			}
-
 			for (int nb : finalListe1) {
 				var tempNb = finalListe2.stream().filter(nb2 -> nb2 == nb).count();
 				result += tempNb*nb;
@@ -165,30 +134,13 @@ public class AdventOfCode {
 
 			display(reportsLevelsList);
 			for (List<Integer> levels : reportsLevelsList) {
-				boolean safe = verifyIfLevelsSafe(levels);
-				if (safe) count++;
+				if (verifyIfLevelsSafe(levels)) count++;
 			}
 		}
 		return String.valueOf(count);
 	}
     private static String day4(String fileName) throws IOException {
-		int count = 0;
-
-		try (FileReader file = new FileReader(fileName);
-			 BufferedReader buffer = new BufferedReader(file)) {
-
-			final List<List<Integer>> reportsLevelsList = buffer.lines()
-					.map(report -> Arrays.stream(report.split(" ")))
-					.map(stringStream -> stringStream.map(Integer::parseInt)
-							.collect(Collectors.toList()))
-					.collect(Collectors.toList());
-
-			display(reportsLevelsList);
-			for (List<Integer> levels : reportsLevelsList) {
-				boolean safe = verifyIfLevelsSafe(levels);
-				if (safe) count++;
-			}
-		}
-		return String.valueOf(count);
+		Day4 day4 = new Day4();
+		return day4.process(fileName).toString();
 	}
 }
