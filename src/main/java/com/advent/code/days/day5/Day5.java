@@ -1,4 +1,4 @@
-package com.advent.code.days;
+package com.advent.code.days.day5;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
