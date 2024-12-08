@@ -1,5 +1,8 @@
 package com.advent.code;
 
+import com.advent.code.days.Day5;
+import com.advent.code.days.Day6;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,9 +22,9 @@ public class AdventOfCode {
 	static Logger logger = getGlobal();
 	private static long DAY = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 	private static final String PREFIX_URL =
-			"D:\\Developpement\\ADVENT_OF_CODE\\advent_of_code\\src\\main\\java\\com\\advent\\code\\files\\";
+			"D:\\Documents\\Developpement web\\Advent_of_code_2024\\src\\main\\java\\com\\advent\\code\\files\\";
 	private static final String EXTENSION = ".txt";
-	private static final Map<Long, String> fileNameDayMap = initProject(false);
+	private static Map<Long, String> fileNameDayMap;
 	private static Map<Long, String> initProject(boolean isTest) {
 		logger.setLevel(Level.FINER);
 		Map<Long, String> map = new HashMap<>();
@@ -91,22 +94,11 @@ public class AdventOfCode {
 		}
    		return true;
 	}
-
 	public static void main(String[] args) throws IOException {
-		switch((int) DAY-1) {
-			case 1:
-				var result1 = day1(fileNameDayMap.get(DAY-1));
-				logger.info(result1);
-				break;
-			case 2:
-				var result2 = day2(fileNameDayMap.get(DAY-1));
-				logger.info(result2);
-				break;
-			default:
-				break;
-		}
+		fileNameDayMap = initProject(true);
+		Day6 day6 = new Day6();
+		logger.info(day6.process(fileNameDayMap.get(6L)));
 	}
-
 	private static String day1(String fileName) throws IOException {
 		int result = 0;
 
@@ -130,18 +122,6 @@ public class AdventOfCode {
 					})
 					.collect(Collectors.toList());
 
-//			var final1 = finalListe1
-//					.stream()
-//					.sorted()
-//					.collect(Collectors.toList());
-//			var final2 = finalListe2
-//					.stream()
-//					.sorted()
-//					.collect(Collectors.toList());
-//			for (int i = 0; i < final1.size(); i++) {
-//				sum += distance(final1.get(i), final2.get(i));
-//			}
-
 			for (int nb : finalListe1) {
 				var tempNb = finalListe2.stream().filter(nb2 -> nb2 == nb).count();
 				result += tempNb*nb;
@@ -152,26 +132,6 @@ public class AdventOfCode {
 		return String.valueOf(result);
 	}
 	private static String day2(String fileName) throws IOException {
-		int count = 0;
-
-		try (FileReader file = new FileReader(fileName);
-			 BufferedReader buffer = new BufferedReader(file)) {
-
-			final List<List<Integer>> reportsLevelsList = buffer.lines()
-					.map(report -> Arrays.stream(report.split(" ")))
-					.map(stringStream -> stringStream.map(Integer::parseInt)
-							.collect(Collectors.toList()))
-					.collect(Collectors.toList());
-
-			display(reportsLevelsList);
-			for (List<Integer> levels : reportsLevelsList) {
-				boolean safe = verifyIfLevelsSafe(levels);
-				if (safe) count++;
-			}
-		}
-		return String.valueOf(count);
-	}
-    private static String day4(String fileName) throws IOException {
 		int count = 0;
 
 		try (FileReader file = new FileReader(fileName);
