@@ -4,18 +4,19 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
+import java.util.logging.Logger;
+
+import static java.util.logging.Logger.getGlobal;
 
 public class Day6 {
+
+    static Logger logger = getGlobal();
 
     public Day6() {}
 
     public String process(String fileName) throws IOException {
         MapGuard mapGuard;
-        MapGuard savedMapGuard;
-        List<PointWithDirection> visitedPoints = new ArrayList<>();
+        List<PointWithDirection> firstVisitedPoints = new LinkedList<>();
 
         long count;
         try (FileReader file = new FileReader(fileName);
@@ -27,36 +28,50 @@ public class Day6 {
 
             mapGuard.displayMap();
             while (guardIsInsideMap(mapGuard)) {
-                moveGuard(mapGuard, visitedPoints);
+                moveGuard(mapGuard, firstVisitedPoints);
             }
             mapGuard.getMap()[mapGuard.getGuardPosition().getX()][mapGuard.getGuardPosition().getY()].setContent("X");
             mapGuard.getMap()[mapGuard.getGuardPosition().getX()][mapGuard.getGuardPosition().getY()].setVisited(true);
-            visitedPoints.add(new PointWithDirection(mapGuard.getGuardPosition().getX(), mapGuard.getGuardPosition().getY(), mapGuard.getGuardDirection(), true));
+            firstVisitedPoints.add(new PointWithDirection(mapGuard.getGuardPosition().getX(), mapGuard.getGuardPosition().getY(), mapGuard.getGuardDirection(), true));
 
-            count = 0;
+            MapGuard savedMapGuard;
+            // part2
             Map<String, Point> positionsToCount = new HashMap<>();
-            for (Point visitedPoint : visitedPoints) {
+            for (int index = 1; index < firstVisitedPoints.size(); index++) {
                 List<PointWithDirection> visitedPointInTheRun = new LinkedList<>();
+                PointWithDirection possibleBlock = firstVisitedPoints.get(index);
                 savedMapGuard = new MapGuard(lines.length, lines[0].length, lines);
-                savedMapGuard.getMap()[visitedPoint.getX()][visitedPoint.getY()].setContent("#");
+                savedMapGuard.getMap()[possibleBlock.getX()][possibleBlock.getY()].setContent("#");
+                // set position of the guard to 1 ctrl+Z to begin moves
+                savedMapGuard.setGuardPosition(firstVisitedPoints.get(index - 1));
+                savedMapGuard.setGuardDirection(firstVisitedPoints.get(index - 1).getDirection());
+                // then compare every position to the list of the part 1 already visited to know if we are in a loop
                 while (guardIsInsideMap(savedMapGuard)) {
                     moveGuard(savedMapGuard, visitedPointInTheRun);
-                    if (isGuardInLoop(savedMapGuard, visitedPointInTheRun)) {
-                        String key = visitedPoint.getX() + String.valueOf(visitedPoint.getY());
-                        positionsToCount.put(key, visitedPoint);
+                    if (isGuardInLoop(visitedPointInTheRun)) {
+                        String key = possibleBlock.getX() + String.valueOf(possibleBlock.getY());
+                        positionsToCount.put(key, possibleBlock);
                         break;
                     }
                 }
+//                logger.info("Point (" + possibleBlock.getX() + ", " + possibleBlock.getY() + ") is executed");
             }
             count = positionsToCount.size();
         }
         return "There is " + nbVisited(mapGuard) + " visited cases and there is " + count + " possible loops";
     }
 
-    private boolean isGuardInLoop(MapGuard mapGuard, List<PointWithDirection> visitedPointInTheRun) {
-        return visitedPointInTheRun
+    private boolean isGuardInLoop(
+            List<PointWithDirection> visitedPointInTheRun
+    ) {
+        var lastVisitedPoint = visitedPointInTheRun.get(visitedPointInTheRun.size() - 1);
+        List<PointWithDirection> lastElements = new LinkedList<>(visitedPointInTheRun);
+        lastElements.remove(lastVisitedPoint);
+
+        var nbTimes = (int) lastElements
                 .stream()
-                .anyMatch(point -> mapGuard.getGuardPosition().equals(point) && point.getDirection().equals(mapGuard.getGuardDirection()));
+                .filter(point -> point.equals(lastVisitedPoint)).count();
+        return nbTimes > 0;
     }
 
     private long nbVisited(MapGuard mapGuard) {
@@ -88,9 +103,7 @@ public class Day6 {
                 } else {
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setContent("X");
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setVisited(true);
-                    if (!mapGuard.getMap()[guardPos.getX()][guardPos.getY()].equals(mapGuard.getGuardInitialPosition())) {
-                        visitedPoints.add(new PointWithDirection(guardPos.getX(), guardPos.getY(), Direction.NORTH, true));
-                    }
+                    visitedPoints.add(new PointWithDirection(guardPos.getX(), guardPos.getY(), Direction.NORTH, true));
                     mapGuard.setGuardPosition(mapGuard.getMap()[guardPos.getX()][guardPos.getY() - 1]);
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()-1].setContent("^");
                 }
@@ -103,7 +116,6 @@ public class Day6 {
                     } else {
                         return;
                     }
-                    moveGuard(mapGuard, visitedPoints);
                 } else {
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setContent("X");
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setVisited(true);
@@ -120,7 +132,6 @@ public class Day6 {
                     } else {
                         return;
                     }
-                    moveGuard(mapGuard, visitedPoints);
                 } else {
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setContent("X");
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setVisited(true);
@@ -137,7 +148,6 @@ public class Day6 {
                     } else {
                         return;
                     }
-                    moveGuard(mapGuard, visitedPoints);
                 } else {
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setContent("X");
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setVisited(true);
@@ -149,7 +159,6 @@ public class Day6 {
             default:
                 break;
         }
-        // mapGuard.displayMap();
     }
 
     private boolean guardIsInsideMap(MapGuard mapGuard) {

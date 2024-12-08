@@ -3,13 +3,9 @@ package com.advent.code.days;
 public class MapGuard {
     private Point[][] map;
     private Point guardPosition;
-    private Point guardInitialPosition;
     private Direction guardDirection;
-    private Direction guardInitialDirection;
     private int width;
     private int height;
-
-    public MapGuard() {}
 
     public MapGuard(int width, int height, String[][] tab) {
         this.width = width;
@@ -20,9 +16,7 @@ public class MapGuard {
                 this.map[x][y] = new Point(x,y, tab[y][x]);
                 if (tab[y][x].equals("^")) {
                     this.guardPosition = this.map[x][y];
-                    this.guardInitialPosition = this.map[x][y];
                     this.guardDirection = Direction.NORTH;
-                    this.guardInitialDirection = Direction.NORTH;
                     this.map[x][y] = new Point(x,y, "O");
                     this.map[x][y].setVisited(true);
                 }
@@ -32,10 +26,6 @@ public class MapGuard {
 
     public Point[][] getMap() {
         return map;
-    }
-
-    public void setMap(Point[][] map) {
-        this.map = map;
     }
 
     public Point getGuardPosition() {
@@ -50,16 +40,8 @@ public class MapGuard {
         return width;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
     public int getHeight() {
         return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
     }
 
     public Direction getGuardDirection() {
@@ -68,22 +50,6 @@ public class MapGuard {
 
     public void setGuardDirection(Direction guardDirection) {
         this.guardDirection = guardDirection;
-    }
-
-    public Point getGuardInitialPosition() {
-        return guardInitialPosition;
-    }
-
-    public void setGuardInitialPosition(Point guardInitialPosition) {
-        this.guardInitialPosition = guardInitialPosition;
-    }
-
-    public Direction getGuardInitialDirection() {
-        return guardInitialDirection;
-    }
-
-    public void setGuardInitialDirection(Direction guardInitialDirection) {
-        this.guardInitialDirection = guardInitialDirection;
     }
 
     public void displayMap() {

@@ -13,12 +13,12 @@ public class PointWithDirection extends Point{
         return direction;
     }
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
-
     @Override
     public boolean equals(Point p) {
         return super.equals(p);
+    }
+
+    public boolean equals(PointWithDirection p) {
+        return super.equals(p) && p.getDirection().equals(direction);
     }
 }

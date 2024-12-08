@@ -95,7 +95,7 @@ public class AdventOfCode {
    		return true;
 	}
 	public static void main(String[] args) throws IOException {
-		fileNameDayMap = initProject(true);
+		fileNameDayMap = initProject(false);
 		Day6 day6 = new Day6();
 		logger.info(day6.process(fileNameDayMap.get(6L)));
 	}
