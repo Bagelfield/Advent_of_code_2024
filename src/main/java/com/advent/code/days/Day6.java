@@ -13,10 +13,11 @@ public class Day6 {
     public Day6() {}
 
     public String process(String fileName) throws IOException {
-        long count = 1;
-
         MapGuard mapGuard;
+        MapGuard savedMapGuard;
+        List<PointWithDirection> visitedPoints = new ArrayList<>();
 
+        long count;
         try (FileReader file = new FileReader(fileName);
              BufferedReader buffer = new BufferedReader(file)) {
             String[][] lines = buffer.lines()
@@ -25,11 +26,37 @@ public class Day6 {
             mapGuard = new MapGuard(lines.length, lines[0].length, lines);
 
             mapGuard.displayMap();
-            while(guardIsInsideMap(mapGuard)) {
-                count += moveGuard(mapGuard, count);
+            while (guardIsInsideMap(mapGuard)) {
+                moveGuard(mapGuard, visitedPoints);
             }
+            mapGuard.getMap()[mapGuard.getGuardPosition().getX()][mapGuard.getGuardPosition().getY()].setContent("X");
+            mapGuard.getMap()[mapGuard.getGuardPosition().getX()][mapGuard.getGuardPosition().getY()].setVisited(true);
+            visitedPoints.add(new PointWithDirection(mapGuard.getGuardPosition().getX(), mapGuard.getGuardPosition().getY(), mapGuard.getGuardDirection(), true));
+
+            count = 0;
+            Map<String, Point> positionsToCount = new HashMap<>();
+            for (Point visitedPoint : visitedPoints) {
+                List<PointWithDirection> visitedPointInTheRun = new LinkedList<>();
+                savedMapGuard = new MapGuard(lines.length, lines[0].length, lines);
+                savedMapGuard.getMap()[visitedPoint.getX()][visitedPoint.getY()].setContent("#");
+                while (guardIsInsideMap(savedMapGuard)) {
+                    moveGuard(savedMapGuard, visitedPointInTheRun);
+                    if (isGuardInLoop(savedMapGuard, visitedPointInTheRun)) {
+                        String key = visitedPoint.getX() + String.valueOf(visitedPoint.getY());
+                        positionsToCount.put(key, visitedPoint);
+                        break;
+                    }
+                }
+            }
+            count = positionsToCount.size();
         }
-        return "Guard moved " + count + " times. There is " + nbVisited(mapGuard) + " visited cases";
+        return "There is " + nbVisited(mapGuard) + " visited cases and there is " + count + " possible loops";
+    }
+
+    private boolean isGuardInLoop(MapGuard mapGuard, List<PointWithDirection> visitedPointInTheRun) {
+        return visitedPointInTheRun
+                .stream()
+                .anyMatch(point -> mapGuard.getGuardPosition().equals(point) && point.getDirection().equals(mapGuard.getGuardDirection()));
     }
 
     private long nbVisited(MapGuard mapGuard) {
@@ -45,8 +72,7 @@ public class Day6 {
         return nbVisited;
     }
 
-    private long moveGuard(MapGuard mapGuard, long countMoves) {
-        countMoves++;
+    private void moveGuard(MapGuard mapGuard, List<PointWithDirection> visitedPoints) {
         var guardPos = mapGuard.getGuardPosition();
         var guardDirection = mapGuard.getGuardDirection();
 
@@ -55,13 +81,16 @@ public class Day6 {
                 if (guardIsBlocked(mapGuard)) {
                     mapGuard.setGuardDirection(Direction.EAST);
                     if (guardIsInsideMap(mapGuard)) {
-                        moveGuard(mapGuard, countMoves);
+                        moveGuard(mapGuard, visitedPoints);
                     } else {
-                        return countMoves;
+                        return;
                     }
                 } else {
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setContent("X");
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setVisited(true);
+                    if (!mapGuard.getMap()[guardPos.getX()][guardPos.getY()].equals(mapGuard.getGuardInitialPosition())) {
+                        visitedPoints.add(new PointWithDirection(guardPos.getX(), guardPos.getY(), Direction.NORTH, true));
+                    }
                     mapGuard.setGuardPosition(mapGuard.getMap()[guardPos.getX()][guardPos.getY() - 1]);
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()-1].setContent("^");
                 }
@@ -70,14 +99,15 @@ public class Day6 {
                 if (guardIsBlocked(mapGuard)) {
                     mapGuard.setGuardDirection(Direction.WEST);
                     if (guardIsInsideMap(mapGuard)) {
-                        moveGuard(mapGuard, countMoves);
+                        moveGuard(mapGuard, visitedPoints);
                     } else {
-                        return countMoves;
+                        return;
                     }
-                    moveGuard(mapGuard, countMoves);
+                    moveGuard(mapGuard, visitedPoints);
                 } else {
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setContent("X");
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setVisited(true);
+                    visitedPoints.add(new PointWithDirection(guardPos.getX(), guardPos.getY(), Direction.SOUTH, true));
                     mapGuard.setGuardPosition(mapGuard.getMap()[guardPos.getX()][guardPos.getY() + 1]);
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY() + 1].setContent("^");
                 }
@@ -86,14 +116,15 @@ public class Day6 {
                 if (guardIsBlocked(mapGuard)) {
                     mapGuard.setGuardDirection(Direction.SOUTH);
                     if (guardIsInsideMap(mapGuard)) {
-                        moveGuard(mapGuard, countMoves);
+                        moveGuard(mapGuard, visitedPoints);
                     } else {
-                        return countMoves;
+                        return;
                     }
-                    moveGuard(mapGuard, countMoves);
+                    moveGuard(mapGuard, visitedPoints);
                 } else {
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setContent("X");
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setVisited(true);
+                    visitedPoints.add(new PointWithDirection(guardPos.getX(), guardPos.getY(), Direction.EAST, true));
                     mapGuard.setGuardPosition(mapGuard.getMap()[guardPos.getX() + 1][guardPos.getY()]);
                     mapGuard.getMap()[guardPos.getX() + 1][guardPos.getY()].setContent("^");
                 }
@@ -102,14 +133,15 @@ public class Day6 {
                 if (guardIsBlocked(mapGuard)) {
                     mapGuard.setGuardDirection(Direction.NORTH);
                     if (guardIsInsideMap(mapGuard)) {
-                        moveGuard(mapGuard, countMoves);
+                        moveGuard(mapGuard,visitedPoints);
                     } else {
-                        return countMoves;
+                        return;
                     }
-                    moveGuard(mapGuard, countMoves);
+                    moveGuard(mapGuard, visitedPoints);
                 } else {
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setContent("X");
                     mapGuard.getMap()[guardPos.getX()][guardPos.getY()].setVisited(true);
+                    visitedPoints.add(new PointWithDirection(guardPos.getX(), guardPos.getY(), Direction.WEST, true));
                     mapGuard.setGuardPosition(mapGuard.getMap()[guardPos.getX() - 1][guardPos.getY()]);
                     mapGuard.getMap()[guardPos.getX() - 1][guardPos.getY()].setContent("^");
                 }
@@ -117,8 +149,7 @@ public class Day6 {
             default:
                 break;
         }
-        mapGuard.displayMap();
-        return countMoves;
+        // mapGuard.displayMap();
     }
 
     private boolean guardIsInsideMap(MapGuard mapGuard) {

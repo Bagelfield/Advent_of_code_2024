@@ -51,6 +51,10 @@ public class Point {
     public void setVisited(boolean visited) {
         this.visited = visited;
     }
+
+    public boolean equals(Point p) {
+        return x == p.x && y == p.y;
+    }
 }
 
 

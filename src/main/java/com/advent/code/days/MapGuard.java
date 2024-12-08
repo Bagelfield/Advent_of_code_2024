@@ -3,7 +3,9 @@ package com.advent.code.days;
 public class MapGuard {
     private Point[][] map;
     private Point guardPosition;
+    private Point guardInitialPosition;
     private Direction guardDirection;
+    private Direction guardInitialDirection;
     private int width;
     private int height;
 
@@ -18,7 +20,10 @@ public class MapGuard {
                 this.map[x][y] = new Point(x,y, tab[y][x]);
                 if (tab[y][x].equals("^")) {
                     this.guardPosition = this.map[x][y];
+                    this.guardInitialPosition = this.map[x][y];
                     this.guardDirection = Direction.NORTH;
+                    this.guardInitialDirection = Direction.NORTH;
+                    this.map[x][y] = new Point(x,y, "O");
                     this.map[x][y].setVisited(true);
                 }
             }
@@ -63,6 +68,22 @@ public class MapGuard {
 
     public void setGuardDirection(Direction guardDirection) {
         this.guardDirection = guardDirection;
+    }
+
+    public Point getGuardInitialPosition() {
+        return guardInitialPosition;
+    }
+
+    public void setGuardInitialPosition(Point guardInitialPosition) {
+        this.guardInitialPosition = guardInitialPosition;
+    }
+
+    public Direction getGuardInitialDirection() {
+        return guardInitialDirection;
+    }
+
+    public void setGuardInitialDirection(Direction guardInitialDirection) {
+        this.guardInitialDirection = guardInitialDirection;
     }
 
     public void displayMap() {
