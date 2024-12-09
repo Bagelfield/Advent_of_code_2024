@@ -1,5 +1,6 @@
 package com.advent.code.days.day6;
 
+import com.advent.code.days.Day;
 import com.advent.code.days.day6.data.Direction;
 import com.advent.code.days.day6.data.MapGuard;
 import com.advent.code.days.day6.data.Point;
@@ -13,18 +14,21 @@ import java.util.logging.Logger;
 
 import static java.util.logging.Logger.getGlobal;
 
-public class Day6 {
+public class Day6 extends Day {
 
     static Logger logger = getGlobal();
 
-    public Day6() {}
+    public Day6() {
+        super(6);
+    }
 
-    public String process(String fileName) throws IOException {
+    @Override
+    public String process(boolean isTest) throws IOException {
         MapGuard mapGuard;
         List<PointWithDirection> firstVisitedPoints = new LinkedList<>();
 
         long count;
-        try (FileReader file = new FileReader(fileName);
+        try (FileReader file = new FileReader(isTest ? fileNameTest : fileName);
              BufferedReader buffer = new BufferedReader(file)) {
             String[][] lines = buffer.lines()
                     .map(line -> line.split(""))

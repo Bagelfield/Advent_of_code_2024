@@ -1,5 +1,7 @@
 package com.advent.code.days.day7;
 
+import com.advent.code.days.Day;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,15 +11,18 @@ import java.util.stream.Collectors;
 
 import static java.util.logging.Logger.getGlobal;
 
-public class Day7 {
+public class Day7 extends Day {
 
     static Logger logger = getGlobal();
 
-    public Day7() {}
+    public Day7() {
+        super(7);
+    }
 
-    public String process(String fileName) throws IOException {
+    @Override
+    public Object process(boolean isTest) throws IOException {
         long count=0;
-        try (FileReader file = new FileReader(fileName);
+        try (FileReader file = new FileReader(isTest ? fileNameTest : fileName);
              BufferedReader buffer = new BufferedReader(file)) {
             List<Map<Long, List<String>>> lines = buffer.lines()
                     .map(line -> {

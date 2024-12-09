@@ -1,5 +1,7 @@
 package com.advent.code.days.day5;
 
+import com.advent.code.days.Day;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -7,14 +9,16 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-public class Day5 {
+public class Day5 extends Day {
+    protected Day5() {
+        super(5);
+    }
 
-    public Day5() {}
-
-    public String process(String fileName) throws IOException {
+    @Override
+    public Object process(boolean isTest) throws IOException {
         int count = 0;
 
-        try (FileReader file = new FileReader(fileName);
+        try (FileReader file = new FileReader(isTest ? fileNameTest : fileName);
              BufferedReader buffer = new BufferedReader(file)) {
             AtomicBoolean firstPart = new AtomicBoolean(true);
             Map<Integer, List<Integer>> rulesMap = new HashMap<>();
