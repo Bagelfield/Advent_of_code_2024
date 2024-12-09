@@ -38,7 +38,8 @@ public class Day7 {
 
                 // all possible combinations
                 for (String combination : combinations) {
-                    long result = Long.parseLong(nbList.get(0));
+                    String resultStr = nbList.get(0);
+                    long result = Long.parseLong(resultStr);
                     for (int numberIndex = 1; numberIndex < nbList.size(); numberIndex++) {
                         switch (String.valueOf(combination.charAt(numberIndex-1))) {
                             case "*":
@@ -46,6 +47,9 @@ public class Day7 {
                                 break;
                             case "+":
                                 result+=Long.parseLong(nbList.get(numberIndex));
+                                break;
+                            case "|":
+                                result = Long.parseLong(result + nbList.get(numberIndex));
                                 break;
                             default:
                                 break;
@@ -78,9 +82,10 @@ public class Day7 {
 
         // Add the "+" operation and recursively call the helper method.
         generateCombinationsHelper(nb, current + "+", result);
-
         // Add the "*" operation and recursively call the helper method.
         generateCombinationsHelper(nb, current + "*", result);
+        // Add the "*" operation and recursively call the helper method.
+        generateCombinationsHelper(nb, current + "|", result);
     }
 }
 
