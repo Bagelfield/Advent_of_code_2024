@@ -1,5 +1,6 @@
 package com.advent.code.days.day4;
 
+import com.advent.code.days.Day;
 import com.advent.code.days.day4.data.Direction;
 import com.advent.code.days.day4.data.XmasCase;
 import com.advent.code.days.day4.data.XmasCaseOriented;
@@ -8,20 +9,72 @@ import com.advent.code.days.day4.data.XmasTable;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class Day4 {
+public class Day4 extends Day {
 
-    //@Override
-    public Object process(String fileName) throws IOException {
+    public Day4() {
+        super(4);
+    }
+
+    @Override
+    public Object process(boolean isTest) throws IOException {
         var result = 0L;
 
         try (FileReader file = new FileReader(fileName);
-            BufferedReader buffer = new BufferedReader(file)) {
+             BufferedReader buffer = new BufferedReader(file)) {
+            var stream = buffer.lines();
+            XmasTable xmasTable = new XmasTable(stream);
+            var xmasCases = xmasTable.getxMasTable();
+            var aCaseList = Arrays
+                    .stream(xmasCases)
+                    .filter(xmasCase -> xmasCase.getContent().equals("A"))
+                    .collect(Collectors.toList());
+
+            var listeOk = Set.of("M", "S");
+
+            for (var xmasCase : aCaseList) {
+                var neighbours = getNeigbourCasesDiagOnly(xmasCase, xmasTable);
+                for (var neighbour : neighbours) {
+                    if (listeOk.contains(neighbour.getContent())) {
+                        var neighbourTR = neighbours
+                                .stream()
+                                .filter(xmasCaseTL -> xmasCaseTL.getDirection().equals(Direction.DIAG_TR))
+                                .collect(Collectors.toList());
+                        var neighbourBR = neighbours
+                                .stream()
+                                .filter(xmasCaseTL -> xmasCaseTL.getDirection().equals(Direction.DIAG_BR))
+                                .collect(Collectors.toList());
+                        var neighbourBL = neighbours
+                                .stream()
+                                .filter(xmasCaseTL -> xmasCaseTL.getDirection().equals(Direction.DIAG_BL))
+                                .collect(Collectors.toList());
+                        if (!neighbourTR.isEmpty() && !neighbourBR.isEmpty() && !neighbourBL.isEmpty()) {
+                            if (listeOk.contains(neighbourTR.get(0).getContent())
+                                    && listeOk.contains(neighbourBL.get(0).getContent())
+                                    && listeOk.contains(neighbourBR.get(0).getContent())) {
+                                if (Objects.requireNonNull(neighbour.getDirection()) == Direction.DIAG_TL) {
+                                    if (!neighbour.getContent().equals(neighbourBR.get(0).getContent())
+                                            && !neighbourBL.get(0).getContent().equals(neighbourTR.get(0).getContent())
+                                    ) {
+                                        result++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private Object processPart1(boolean isTest) throws IOException {
+        var result = 0L;
+
+        try (FileReader file = new FileReader(isTest ? fileNameTest : fileName);
+             BufferedReader buffer = new BufferedReader(file)) {
             var stream = buffer.lines();
             XmasTable xmasTable = new XmasTable(stream);
             var xmasCases = xmasTable.getxMasTable();
@@ -41,51 +94,6 @@ public class Day4 {
                                 result++;
                             }
                         }
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    public Object processPart2(String fileName) throws IOException {
-        var result = 0L;
-
-        try (FileReader file = new FileReader(fileName);
-             BufferedReader buffer = new BufferedReader(file)) {
-            var stream = buffer.lines();
-            XmasTable xmasTable = new XmasTable(stream);
-            var xmasCases = xmasTable.getxMasTable();
-            var aCaseList = Arrays
-                    .stream(xmasCases)
-                    .filter(xmasCase -> xmasCase.getContent().equals("A"))
-                    .collect(Collectors.toList());
-
-            var listeOk = Set.of("M", "S");
-            var directionsAdj = Set.of(Direction.DIAG_TR, Direction.DIAG_BL);
-
-            for (var xmasCase : aCaseList) {
-                var neighbours = getNeigbourCasesDiagOnly(xmasCase, xmasTable);
-                for (var neighbour : neighbours) {
-                    switch(neighbour.getDirection()) {
-                        case DIAG_TL:
-                            if ((listeOk.contains(neighbour.getContent())
-                                    && neighbours
-                                    .stream()
-                                    .filter(xmasCaseAdj -> directionsAdj.contains(xmasCaseAdj.getDirection())
-                                            && listeOk.contains(xmasCaseAdj.getContent()))
-                                            .count() == 2)
-                                    && neighbours
-                                    .stream()
-                                    .filter(xmasCaseAdj -> Direction.DIAG_BR.equals(xmasCaseAdj.getDirection())
-                                            && listeOk.contains(xmasCaseAdj.getContent()))
-                                            .count() == 1
-                            ) {
-                               result++;
-                            }
-                            break;
-                        default:
-                            break;
                     }
                 }
             }
@@ -207,7 +215,6 @@ public class Day4 {
         }
     return xmasCases;
 }
-
     private XmasCaseOriented getOrientedNeighbourCase(
             XmasCaseOriented orientedCase,
             XmasTable xmasTable

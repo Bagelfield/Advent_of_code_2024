@@ -1,6 +1,7 @@
 package com.advent.code;
 
 import com.advent.code.days.Day;
+import com.advent.code.days.day4.Day4;
 import com.advent.code.days.day7.Day7;
 
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class AdventOfCode {
 	public static void main(String[] args) throws IOException {
 		logger.setLevel(Level.FINER);
 
-		Day day = new Day7();
+		Day day = new Day4();
 		logger.info(day.process(false).toString());
 	}
 }
