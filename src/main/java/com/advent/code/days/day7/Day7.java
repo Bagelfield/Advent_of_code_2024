@@ -70,7 +70,7 @@ public class Day7 extends Day {
         return String.valueOf(count);
     }
 
-    // Method to generate all combinations of "+" and "*" for a given number of cases.
+    // Method to generate all combinations of "+" and "*" and "||" for a given number of cases.
     public static List<String> generateCombinations(int nb) {
         List<String> result = new ArrayList<>();
         generateCombinationsHelper(nb, "", result);
