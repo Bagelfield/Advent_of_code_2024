@@ -1,4 +1,4 @@
-package com.advent.code.days.day6.data;
+package com.advent.code.days.commons;
 
 public class Point {
     private int x;

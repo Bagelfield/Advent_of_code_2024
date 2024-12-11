@@ -3,8 +3,8 @@ package com.advent.code.days.day6;
 import com.advent.code.days.Day;
 import com.advent.code.days.day6.data.Direction;
 import com.advent.code.days.day6.data.MapGuard;
-import com.advent.code.days.day6.data.Point;
-import com.advent.code.days.day6.data.PointWithDirection;
+import com.advent.code.days.commons.Point;
+import com.advent.code.days.commons.PointWithDirection;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

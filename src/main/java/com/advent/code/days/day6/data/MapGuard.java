@@ -1,5 +1,7 @@
 package com.advent.code.days.day6.data;
 
+import com.advent.code.days.commons.Point;
+
 public class MapGuard {
     private Point[][] map;
     private Point guardPosition;

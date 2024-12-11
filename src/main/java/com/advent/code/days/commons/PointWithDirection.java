@@ -1,4 +1,6 @@
-package com.advent.code.days.day6.data;
+package com.advent.code.days.commons;
+
+import com.advent.code.days.day6.data.Direction;
 
 public class PointWithDirection extends Point{
     private Direction direction;
