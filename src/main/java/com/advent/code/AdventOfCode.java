@@ -1,40 +1,19 @@
 package com.advent.code;
 
-import com.advent.code.day4.Day4;
+import com.advent.code.days.Day;
+import com.advent.code.days.day8.Day8;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static java.util.logging.Logger.getGlobal;
 
 public class AdventOfCode {
-	private static final System.Logger logger = System.getLogger("logger");
-	private static final String PREFIX_URL =
-			"D:\\tools\\ADVENT_OF_CODE\\Advent_of_code_2024\\src\\main\\java\\com\\advent\\code\\files\\";
-	private static final String EXTENSION = ".txt";
-	private static Map<Long, String> initProject(boolean isTest) {
-		Map<Long, String> map = new HashMap<>();
+	static Logger logger = getGlobal();
 
-		for (long i = 1; i < 25; i++) {
-			String name = PREFIX_URL + "DAY_" + i + "_" + i;
-			String nameTest = PREFIX_URL + "DAY_" + i + "_test" + i;
-			if (isTest) {
-				map.put(i, nameTest + EXTENSION);
-			} else {
-				map.put(i, name + EXTENSION);
-			}
-		}
-		return map;
-	}
-	private static String removeSpaces(String data) {
-		StringBuilder sb = new StringBuilder();
-		for (char c : data.toCharArray()) {
-			if (c != ' ') sb.append(c);
-		}
-		return sb.toString();
-	}
-	private static <T> void display(List<T> data) {
+	private static <T> void display(Collection<T> data) {
 		StringBuilder sb = new StringBuilder();
 
 		for (T t : data) {
@@ -42,105 +21,17 @@ public class AdventOfCode {
 			) {
 				sb.append(t);
 			} else {
-				display((List<T>) t);
+				display((Collection<T>) t);
 			}
 		}
 		String str = sb.toString();
-		logger.log(System.Logger.Level.INFO, str);
-	}
-	private static int distance(int i, int j) {
-		return i >= j ? i-j : j-i;
-	}
-	private static boolean verifyIfLevelsSafe(List<Integer> levels) {
-		boolean save = true;
-		Map<Integer, Integer> nbPbsMap = new HashMap<>();
-
-		for (int i = 0; i < levels.size() - 1; i++) {
-			nbPbsMap.put(i, 0);
-			nbPbsMap.put(i + 1, 0);
-
-			var countCurrentLevelIPbs = 0;
-			var countCurrentLevelIPlus1Pbs = 0;
-			var nb1 = levels.get(i);
-			var nb2 = levels.get(i + 1);
-			var increasing = nb2 - nb1 >= 0;
-			var distance = distance(nb1, nb2);
-			if (i == 0) {
-				save = increasing;
-			}
-			//TESTS
-			if (0 == distance || distance > 3) {
-				countCurrentLevelIPbs++;
-				countCurrentLevelIPlus1Pbs++;
-			} else if (save != increasing) {
-				countCurrentLevelIPbs++;
-			}
-			save = increasing;
-			nbPbsMap.put(i, nbPbsMap.get(i) + countCurrentLevelIPbs);
-			nbPbsMap.put(i + 1, nbPbsMap.get(i + 1) + countCurrentLevelIPlus1Pbs);
-		}
-   		return true;
+		logger.info(str);
 	}
 
 	public static void main(String[] args) throws IOException {
-  Map<Long, String> fileNameDayMap;
-		fileNameDayMap = initProject(true);
-		logger.log(System.Logger.Level.INFO, day4(fileNameDayMap.get(4L)));
-	}
+		logger.setLevel(Level.FINER);
 
-	private static String day1(String fileName) throws IOException {
-		int result = 0;
-
-		try (FileReader file = new FileReader(fileName);
-			 BufferedReader buffer = new BufferedReader(file)) {
-			final List<Integer> finalListe1 = new ArrayList<>();
-			final List<Integer> finalListe2 = new ArrayList<>();
-			final List<List<Integer>> listFinale = new ArrayList<>();
-			listFinale.add(finalListe1);
-			listFinale.add(finalListe2);
-
-			var stream = buffer.lines()
-					.map(line -> Arrays.stream(line.split(" {3}")))
-					.map(stringStream -> {
-						List<String> listeInt = stringStream.collect(Collectors.toList());
-						int long1 = Integer.parseInt(listeInt.get(0));
-						int long2 = Integer.parseInt(listeInt.get(1));
-						finalListe1.add(long1);
-						finalListe2.add(long2);
-						return stringStream;
-					})
-					.collect(Collectors.toList());
-
-			for (int nb : finalListe1) {
-				var tempNb = finalListe2.stream().filter(nb2 -> nb2 == nb).count();
-				result += tempNb*nb;
-			}
-
-		}
-
-		return String.valueOf(result);
-	}
-	private static String day2(String fileName) throws IOException {
-		int count = 0;
-
-		try (FileReader file = new FileReader(fileName);
-			 BufferedReader buffer = new BufferedReader(file)) {
-
-			final List<List<Integer>> reportsLevelsList = buffer.lines()
-					.map(report -> Arrays.stream(report.split(" ")))
-					.map(stringStream -> stringStream.map(Integer::parseInt)
-							.collect(Collectors.toList()))
-					.collect(Collectors.toList());
-
-			display(reportsLevelsList);
-			for (List<Integer> levels : reportsLevelsList) {
-				if (verifyIfLevelsSafe(levels)) count++;
-			}
-		}
-		return String.valueOf(count);
-	}
-    private static String day4(String fileName) throws IOException {
-		Day4 day4 = new Day4();
-		return day4.process(fileName).toString();
+		Day day = new Day8();
+		logger.info(day.process(false).toString());
 	}
 }
