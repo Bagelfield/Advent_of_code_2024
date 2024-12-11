@@ -23,12 +23,7 @@ public class Day8 extends Day {
             var streamLines = buffer.lines();
             var mipmap = new MipMap(streamLines);
             setNodesFrom(mipmap.getAntennas(), mipmap);
-            var uniqueNodesInMap = mipmap
-                    .getNodes()
-                    .stream()
-                    .filter(mipmap::isInOfMipMap)
-                    .collect(Collectors.toList());
-            count = uniqueNodesInMap.size();
+            count = mipmap.getNodes().size();
         }
         return count;
     }

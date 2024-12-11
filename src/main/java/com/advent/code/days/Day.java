@@ -7,9 +7,7 @@ public abstract class Day {
     protected String fileName;
     protected String fileNameTest;
     public static final String PREFIX_URL =
-            "C:\\Users\\vmigot\\Documents\\DEVELOPPEMENT\\" +
-                    "Advent of code\\Advent_of_code_2024\\" +
-                    "src\\main\\java\\com\\advent\\code\\files\\";
+            "D:\\Documents\\Developpement web\\Advent_of_code_2024\\src\\main\\java\\com\\advent\\code\\files\\";
     public static final String EXTENSION = ".txt";
     public abstract Object process(boolean isTest) throws IOException;
     public String getName() {
