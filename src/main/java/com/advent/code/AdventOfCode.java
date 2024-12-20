@@ -1,7 +1,7 @@
 package com.advent.code;
 
 import com.advent.code.days.Day;
-import com.advent.code.days.day8.Day8;
+import com.advent.code.days.day11.Day11;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -13,13 +13,14 @@ import static java.util.logging.Logger.getGlobal;
 public class AdventOfCode {
 	static Logger logger = getGlobal();
 
-	private static <T> void display(Collection<T> data) {
+	public static <T> void display(Collection<T> data) {
 		StringBuilder sb = new StringBuilder();
 
 		for (T t : data) {
-			if (t instanceof String || t instanceof Integer
-			) {
-				sb.append(t);
+			if (t instanceof String
+					|| t instanceof Integer
+					|| t instanceof Long) {
+				sb.append(t + " / ");
 			} else {
 				display((Collection<T>) t);
 			}
@@ -31,7 +32,7 @@ public class AdventOfCode {
 	public static void main(String[] args) throws IOException {
 		logger.setLevel(Level.FINER);
 
-		Day day = new Day8();
-		logger.info(day.process(false).toString());
+		Day day = new Day11();
+		logger.info(day.process(true).toString());
 	}
 }
