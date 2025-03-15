@@ -1,10 +1,8 @@
 package com.advent.code;
 
 import com.advent.code.days.Day;
-import com.advent.code.days.day18.Day18;
-import com.advent.code.days.day23.Day23;
+import com.advent.code.days.day24.Day24;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,10 +41,10 @@ public class AdventOfCode {
 		logger.info(str);
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		logger.setLevel(Level.FINER);
 
-		Day day = new Day23();
+		Day day = new Day24();
 		logger.info(day.process(false).toString());
 	}
 }

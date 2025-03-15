@@ -3,6 +3,9 @@ package com.advent.code.days.day18;
 import com.advent.code.AdventOfCode;
 import com.advent.code.days.Day;
 import com.advent.code.days.commons.*;
+import com.advent.code.days.commons.day18.Dijkstra;
+import com.advent.code.days.commons.day18.Graph;
+import com.advent.code.days.commons.day18.Node;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

@@ -1,4 +1,4 @@
-package com.advent.code.days.commons;
+package com.advent.code.days.commons.day23;
 
 public class Couple {
     private Computer computerA;

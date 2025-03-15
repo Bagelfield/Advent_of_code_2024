@@ -1,4 +1,4 @@
-package com.advent.code.days.commons;
+package com.advent.code.days.commons.day18;
 
 import java.util.HashMap;
 import java.util.LinkedList;
